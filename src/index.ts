@@ -2,7 +2,19 @@ import { Hono } from 'hono'
 
 const app = new Hono()
 
-app.post('/', async (c) => {
+async function authMiddleware(c: any, next:any){
+  if(c.req.header("Authorization")){
+    // DO validation
+    await next()
+  } else {
+    return c.text("You don't have access")
+  }
+
+}
+
+// app.use(authMiddleware)
+
+app.post('/', authMiddleware, async (c) => {
   let body = {}
 
   try {
@@ -19,3 +31,4 @@ app.post('/', async (c) => {
 })
 
 export default app
+ 
